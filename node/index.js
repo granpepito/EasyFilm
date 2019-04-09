@@ -31,7 +31,7 @@ app.get('/', function(req,res){
 })
 
 //Afficher tous les films
-app.get('/films', function(req,res){
+app.get('/film', function(req,res){
   con.query('SELECT * FROM films', (err,results) => {
     if (err)
       throw err
@@ -40,27 +40,32 @@ app.get('/films', function(req,res){
 });
 
 //Afficher les salles
-app.get('/salles', function(req,res){
+//Afficher toutes les salles et les projections qu'elles acceuillent
+app.get('/salle/', function(req,res){
   con.query('SELECT * FROM salles', (err,results) => {
     if (err)
       throw err
-    res.end(JSON.stringify(results))
+    res.send(JSON.stringify(results))
   })
 })
 
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
-app.get('/seances', function(req,res){
+app.get('/seance/', function(req,res){
   con.query('SELECT * FROM seance_projection', (err,results) => {
     if (err)
       throw err
-    res.end(JSON.stringify(results))
+    res.send(JSON.stringify(results))
   })
 })
 
-//Chercher les films encore programmés
 
-//Chercher les films qui ne sont plus programméswitch
+
+//Chercher les films encore programmés
+//app.get('/seance/')
+
+
+//Chercher les films qui ne sont plus programmés
 
 //Chercher un film (selon le titre / utilisation de mots-clés)
 
