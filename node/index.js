@@ -20,10 +20,7 @@ con.connect(function(err){
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//App sur le port 4000
-app.listen(4000, function(){
-  console.log('Example app listening on port 4000')
-})
+
 
 //homepage
 app.get('/', function(req,res){
@@ -90,3 +87,8 @@ app.get('/seance/', function(req,res){
 //Programmer une séance / ou ajoute un nombre d'entrées prévisionnel
 
 //Vendre un billet
+
+//App sur le port 4000
+app.listen(4000, function(){
+  console.log('Serveur port 4000')
+})
