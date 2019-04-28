@@ -5,14 +5,14 @@ const app = express()
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 
-let con = mysql.createConnection({
+let connection = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
   password: "",
   database: "easyfilm"
 });
 
-con.connect(function(err){
+connection.connect(function(err){
   if (err) throw err;
   console.log('Connected!');
 });
@@ -28,35 +28,75 @@ app.get('/', function(req,res){
 })
 
 //Afficher tous les films
-app.get('/film', function(req,res){
-  con.query('SELECT * FROM films', (err,results) => {
-    if (err)
-      throw err
-    res.end(JSON.stringify(results))
+app.get('/films', function(req,res){
+  connection.query('SELECT * FROM films', (err,results) => {
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
+  })
+});
+
+//Afficher un film
+app.get('/film/:id', function(req,res){
+  connection.query('SELECT * FROM films WHERE films.id_film = ?', [req.params.id], (err,results) => {
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
   });
 });
 
 //Afficher les salles
-//Afficher toutes les salles et les projections qu'elles acceuillent
-app.get('/salle/', function(req,res){
-  con.query('SELECT * FROM salles', (err,results) => {
-    if (err)
-      throw err
-    res.send(JSON.stringify(results))
+//Afficher toutes les salles et les projections qu'elles accueillent
+app.get('/salles/', function(req,res){
+  connection.query('SELECT * FROM salles', (err,results) => {
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
   })
 })
+
+//Afficher une salle
+app.get('/salle/:id', function(req,res){
+  connection.query('SELECT * FROM salles WHERE salles.numero_salle = ?', [req.params.id], (err,results) => {
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
+  });
+});
 
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
-app.get('/seance/', function(req,res){
-  con.query('SELECT * FROM seance_projection', (err,results) => {
-    if (err)
-      throw err
-    res.send(JSON.stringify(results))
+app.get('/seances/', function(req,res){
+  connection.query('SELECT seances.*, films.titre FROM films, seances WHERE films.id_film = seances.id_film;', (err,results) => {
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
   })
 })
 
+//Afficher toutes les séances pour un jour donné
+// app.get('/seances/temps?', function(req, res){
+//   connection.query()
+// })
 
+//Afficher toutes les séances pour une semaine donnée
+
+//
 
 //Chercher les films encore programmés
 //app.get('/seance/')
@@ -72,7 +112,17 @@ app.get('/seance/', function(req,res){
 
 //Chercher un film selon
 
-//Chercher les salles affectées
+//Chercher les salles affectées DEVRAIT ERE FAIT AVEC UN QUERY 
+app.get('/seances/salles', function(req, res){
+  connection.query('SELECT * FROM affectations', (err, results) =>{
+    if (err){
+      res.sendStatus(500)
+      res.end()
+    }
+    res.json(results)
+    res.end()
+  })
+})
 
 //
 
@@ -82,12 +132,30 @@ app.get('/seance/', function(req,res){
 
 //Chercher les séances à une heure donnée
 
-//Ajouter un film
-//Est-ce que ajouter un film implique aussi d'ajouter un nombre d'entrées prévisionnel dès l'ajout?
+//Ajouter un film (Ajouter un film implique d'aussi ajouter la première séance!)
+
 //Programmer une séance / ou ajoute un nombre d'entrées prévisionnel
+
+//Supprimer une séance
+
+//Supprimer plusieurs séances (déprogrammer un film)
+
+//Calculer le nombre d'entrées prévisionnel pour la semaine
 
 //Vendre un billet
 
+//Calculer le bénéfice (perte) d'un film à la semaine
+
+//Calculer le bénéfice (perte) pour tous les films qui ont eu des séances cette semaine
+
+//Obtenir le nombre de billets vendus
+
+
+
+//Si l'adresse entrée n'existe pas on redirige vers la page d'accueil
+app.use(function(req, res, next){
+  res.redirect('/')
+})
 //App sur le port 4000
 app.listen(4000, function(){
   console.log('Serveur port 4000')
