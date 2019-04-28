@@ -3,6 +3,7 @@
 const express = require('express')
 const app = express()
 const mysql = require('mysql')
+//const db = require('./db')
 const bodyParser = require('body-parser')
 
 let connection = mysql.createConnection({
@@ -112,7 +113,7 @@ app.get('/seances/', function(req,res){
 
 //Chercher un film selon
 
-//Chercher les salles affectées DEVRAIT ERE FAIT AVEC UN QUERY 
+//Chercher les salles affectées DEVRAIT ERE FAIT AVEC UN QUERY
 app.get('/seances/salles', function(req, res){
   connection.query('SELECT * FROM affectations', (err, results) =>{
     if (err){
