@@ -6,3 +6,8 @@ let connection = mysql.createConnection({
   password: "",
   database: "easyfilm"
 });
+
+connection.connect(function (err) {
+  if (err) throw err;
+  console.log('Connected!');
+});
