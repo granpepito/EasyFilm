@@ -1,89 +1,71 @@
-const express = require('express')
-const app = express()
-const mysql = require('mysql')
-//const db = require('./db')
-const bodyParser = require('body-parser')
+const express = require('express');
+const app = express();
+const db = require('./db.js');
+const bodyParser = require('body-parser');
 
-let connection = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "",
-  database: "easyfilm"
-});
 
-connection.connect(function(err){
-  if (err) throw err;
-  console.log('Connected!');
-});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
 
-//homepage
-app.get('/', function(req,res){
+
+app.get('/', function(req,res){ //homepage
   res.sendFile(__dirname + '/file.html');
 })
-
-//Afficher tous les films
-app.get('/films', function(req,res){
-  connection.query('SELECT * FROM films', (err,results) => {
+    .get('/films', function(req,res){ //Afficher tous les films
+  db.query('SELECT * FROM films', (err,results) => {
     if (err){
-      res.sendStatus(500)
+      res.sendStatus(500);
       res.end()
     }
-    res.json(results)
-    res.end()
-  })
-});
-
-//Afficher un film
-app.get('/film/:id', function(req,res){
-  connection.query('SELECT * FROM films WHERE films.id_film = ?', [req.params.id], (err,results) => {
-    if (err){
-      res.sendStatus(500)
-      res.end()
-    }
-    res.json(results)
-    res.end()
-  });
-});
-
-//Afficher les salles
-//Afficher toutes les salles et les projections qu'elles accueillent
-app.get('/salles/', function(req,res){
-  connection.query('SELECT * FROM salles', (err,results) => {
-    if (err){
-      res.sendStatus(500)
-      res.end()
-    }
-    res.json(results)
+    res.json(results);
     res.end()
   })
 })
+    .get('/film/:id', function(req,res){//Afficher un film
+  db.query('SELECT * FROM films WHERE films.id_film = ?', [req.params.id], (err,results) => {
+    if (err){
+      res.sendStatus(500);
+      res.end()
+    }
+    res.json(results);
+    res.end()
+  });
+})
 
-//Afficher une salle
-app.get('/salle/:id', function(req,res){
-  connection.query('SELECT * FROM salles WHERE salles.numero_salle = ?', [req.params.id], (err,results) => {
+//Afficher les salles
+    .get('/salles/', function(req,res){
+  db.query('SELECT * FROM salles', (err,results) => {
+    if (err){
+      res.sendStatus(500);
+      res.end()
+    }
+    res.json(results);
+    res.end()
+  })
+})
+    .get('/salle/:id', function(req,res){//Afficher une salle
+  db.query('SELECT * FROM salles WHERE salles.numero_salle = ?', [req.params.id], (err,results) => {
     if (err){
       res.sendStatus(500)
       res.end()
     }
-    res.json(results)
+    res.json(results);
     res.end()
   });
-});
+})
 
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
-app.get('/seances/', function(req,res){
-  connection.query('SELECT seances.*, films.titre FROM films, seances WHERE films.id_film = seances.id_film;', (err,results) => {
+    .get('/seances/', function(req,res){
+  db.query('SELECT seances.*, films.titre FROM films, seances WHERE films.id_film = seances.id_film AND WHERE seances.date_projection >= CURDATE();', (err,results) => {
     if (err){
-      res.sendStatus(500)
+      res.sendStatus(500);
       res.end()
     }
-    res.json(results)
+    res.json(results);
     res.end()
   })
 })
@@ -111,14 +93,14 @@ app.get('/seances/', function(req,res){
 
 //Chercher un film selon
 
-//Chercher les salles affectées DEVRAIT ERE FAIT AVEC UN QUERY
-app.get('/seances/salles', function(req, res){
-  connection.query('SELECT * FROM affectations', (err, results) =>{
+
+.get('/seances', function(req, res){ //Chercher les salles affectées
+  db.query('SELECT seances.*, salles.* FROM affectations, salles, seances WHERE seances.id_seance = affectations.seance AND affectations.salle = ? AND seances.date_projection >= ?', [req.query.salle, req.query.when], (err, results) =>{
     if (err){
-      res.sendStatus(500)
+      res.sendStatus(500);
       res.end()
     }
-    res.json(results)
+    res.json(results);
     res.end()
   })
 })
@@ -143,19 +125,17 @@ app.get('/seances/salles', function(req, res){
 
 //Vendre un billet
 
+//Annuler la vente d'un billet
+
 //Calculer le bénéfice (perte) d'un film à la semaine
 
 //Calculer le bénéfice (perte) pour tous les films qui ont eu des séances cette semaine
 
 //Obtenir le nombre de billets vendus
 
-
-
-//Si l'adresse entrée n'existe pas on redirige vers la page d'accueil
-app.use(function(req, res, next){
+.use(function(req, res, next){//Si l'adresse entrée n'existe pas on redirige vers la page d'accueil
   res.redirect('/')
 })
-//App sur le port 4000
-app.listen(4000, function(){
-  console.log('Serveur port 4000')
-})
+    .listen(4000, function(){//App sur le port 4000
+  console.log('Server port 4000')
+});
