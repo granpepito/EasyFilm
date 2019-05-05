@@ -13,9 +13,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', function(req,res){ //homepage
   res.sendFile(__dirname + '/file.html');
-})
-    .get('/films', function(req,res){ //Afficher tous les films
-  db.query('SELECT * FROM films', (err,results) => {
+}).get('/films', function(req,res){ //Afficher tous les films
+  console.log("films");
+  db.query(
+      'SELECT * ' +
+      'FROM films',
+      (err,results) => {
     if (err){
       res.sendStatus(500);
       res.end()
@@ -23,9 +26,12 @@ app.get('/', function(req,res){ //homepage
     res.json(results);
     res.end()
   })
-})
-    .get('/film/:id', function(req,res){//Afficher un film
-  db.query('SELECT * FROM films WHERE films.id_film = ?', [req.params.id], (err,results) => {
+}).get('/film/:id', function(req,res){//Afficher un film
+  db.query(
+      'SELECT * ' +
+      'FROM films ' +
+      'WHERE films.id_film = ?',
+      [req.params.id], (err,results) => {
     if (err){
       res.sendStatus(500);
       res.end()
@@ -33,11 +39,11 @@ app.get('/', function(req,res){ //homepage
     res.json(results);
     res.end()
   });
-})
-
-//Afficher les salles
-    .get('/salles/', function(req,res){
-  db.query('SELECT * FROM salles', (err,results) => {
+}).get('/salles/', function(req,res){//Afficher les salles
+  db.query(
+      'SELECT * ' +
+      'FROM salles',
+      (err,results) => {
     if (err){
       res.sendStatus(500);
       res.end()
@@ -45,9 +51,12 @@ app.get('/', function(req,res){ //homepage
     res.json(results);
     res.end()
   })
-})
-    .get('/salle/:id', function(req,res){//Afficher une salle
-  db.query('SELECT * FROM salles WHERE salles.numero_salle = ?', [req.params.id], (err,results) => {
+}).get('/salle/:id', function(req,res){//Afficher une salle
+  db.query(
+      'SELECT * ' +
+      'FROM salles ' +
+      'WHERE salles.numero_salle = ?',
+      [req.params.id], (err,results) => {
     if (err){
       res.sendStatus(500)
       res.end()
@@ -60,7 +69,13 @@ app.get('/', function(req,res){ //homepage
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
     .get('/seances/', function(req,res){
-  db.query('SELECT seances.*, films.titre FROM films, seances WHERE films.id_film = seances.id_film AND WHERE seances.date_projection >= CURDATE();', (err,results) => {
+  db.query(
+      'SELECT seances.*, films.titre ' +
+      'FROM films, seances ' +
+      'WHERE films.id_film = seances.id_film ' +
+      'AND seances.id_film = films.id_film ' +
+      'AND seances.date_projection >= ?;',
+      [req.query.film, req.query.date], (err,results) => {
     if (err){
       res.sendStatus(500);
       res.end()
@@ -95,7 +110,13 @@ app.get('/', function(req,res){ //homepage
 
 
 .get('/seances', function(req, res){ //Chercher les salles affectées
-  db.query('SELECT seances.*, salles.* FROM affectations, salles, seances WHERE seances.id_seance = affectations.seance AND affectations.salle = ? AND seances.date_projection >= ?', [req.query.salle, req.query.when], (err, results) =>{
+  db.query(
+      'SELECT seances.*, salles.* ' +
+      'FROM affectations, salles, seances ' +
+      'WHERE seances.id_seance = affectations.seance ' +
+      'AND affectations.salle = ? ' +
+      'AND seances.date_projection >= ?',
+      [req.query.salle, req.query.when], (err, results) =>{
     if (err){
       res.sendStatus(500);
       res.end()
