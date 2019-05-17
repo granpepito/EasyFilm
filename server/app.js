@@ -17,7 +17,7 @@ app.use(bodyParser.json())
         res.sendStatus(404)
     })
     .listen(PORT, () => {//App sur le port 4000
-        console.log('Server port ${PORT}')
+        console.log('Server port', PORT)
     });
 
 //
