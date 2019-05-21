@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./database/db.js');
+const db = require('../database/db.js');
 
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
@@ -83,6 +83,9 @@ router.get('/all', (req,res) => {
 
 
 
+
+
+
 //get seance i
 router.route('/:id')
     .get((req, res) => {
@@ -96,7 +99,7 @@ router.route('/:id')
             res.send(rows)
         })
     })
-    .delete((req, res) => {
+    .delete((req, res) => { //Supprimer une séance
         const method = req.method; const routePath = req.route.path; const query = req.query;
         console.log({ method, routePath, query });
         db.query('DELETE FROM ?? WHERE seances.id_seance = ?',
@@ -106,7 +109,58 @@ router.route('/:id')
                 }
                 res.send(rows)
             })
+    });
+
+//Obtenir tous les billets d'une séance
+router.get('/:id/billets', (req, res) => {
+        db.query('SELECT billets.* FROM ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
+            ['billets', 'seances', req.params.id], (err, rows) => {
+                if (err) {
+                    res.sendStatus(500)
+                }
+                res.send(rows)
+            })
     })
+
+    //Obtenir le nombre de billets vendus pour une séance
+    .get('/:id/billets/count', (req, res) => {
+        db.query('SELECT COUNT(billets.id_billets) FROM ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
+            ['billets', 'seances', req.params.id], (err, rows) => {
+                if (err) {
+                    res.sendStatus(500)
+                }
+                res.send(rows)
+            })
+    })
+
+    //Calculer le bénéfice/perte d'une séance 
+    .get('/:id/billets/benef', (req, res) => {
+
+        db.query('SELECT SUM(billets.prix_vente) FROM ??, ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
+            ['billets', 'seances', req.params.id], (err, rows) => {
+                if (err) {
+                    res.sendStatus(500)
+                }
+                res.send(rows)
+            })
+    })
+
+
+//Calculer le nombre d'entrées prévisionnel pour la semaine
+
+
+
+
+// router.get('/:id/:id_film', (req, res) => {
+//     const method = req.method; const routePath = req.route.path; const query = req.query;
+//     console.log({ method, routePath, query });
+//     db.query('SELECT FROM WHERE', [req.params.id, req.params.id_film], (err, rows, fields) => {
+//         if (err){
+//             res.sendStatus(500)
+//         }
+//         res.send(rows)
+//     })
+// })
 
 // .get('/seances', function(req, res){ //Chercher les salles affectées
 //   db.query(
