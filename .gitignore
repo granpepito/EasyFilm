@@ -1,4 +1,14 @@
-/server/node_modules
-/server/.env
+# WebStorm
 .idea
+
+# Sonar
 .sonarlint
+
+# SQL 
+SQL
+
+# Dependencies
+/server/node_modules
+
+#Environment Variables
+/server/.env

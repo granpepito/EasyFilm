@@ -1,155 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db.js');
+const seance = require('../controllers/seances');
 
 //Afficher toutes les séances
 //Un peu inutiles, mieux vaut afficher toutes les séances qui n'ont pas encore été effectuées voire ne pas afficher du tout toutes les séances
-router.get('/all', (req,res) => {
-    const method = req.method; const routePath = req.route.path; const query = req.query;
-    console.log({ method, routePath, query });
-    db.query(
-        'SELECT films.titre, seances.* FROM films, seances WHERE films.id_film = seances.id_film '
-        , (err,rows) => {
-            if (err){
-                res.sendStatus(500);
-                res.end()
-            }
-            res.send(rows)
-        })
-})
+router
+	.get('/all', seance.getAll)
 
+	.get('/search', seance.search);
 
-    .get('/search', (req,res) => {
-        const method = req.method; const routePath = req.route.path; const query = req.query;
-        console.log({ method, routePath, query });
-        if (req.query.date){
-            //Afficher toutes les séances après un jour donné
-            if (req.query.when === 'after') {
-                db.query(
-                    'SELECT  films.titre, seances.* FROM films, seances WHERE films.id_film = seances.id_film AND seances.date_projection >= ?;',
-                    [req.query.date], (err, rows) => {
-                        if (err) {
-                            res.sendStatus(500);
-                            res.end()
-                        }
-                        res.send(rows)
-                    })
-            }
-            else if (req.query.when === 'before') {
-                //Afficher toutes les séances avant un jour donné
-                db.query(
-                    'SELECT  films.titre, seances.* FROM films, seances WHERE films.id_film = seances.id_film AND seances.date_projection <= ?;',
-                    [req.query.date], (err, rows) => {
-                        if (err) {
-                            res.sendStatus(500);
-                            res.end()
-                        }
-                        res.send(rows)
-                    })
-            }
-            else if (req.query.type){
-                //Chercher les séances à une heure donnée (un type de seance donné)
-                db.query(
-                    'SELECT  films.titre, seances.* FROM films, seances WHERE films.id_film = seances.id_film AND seances.date_projection = ? AND seances.type = ?;',
-                    [req.query.date, req.query.type], (err, rows) => {
-                        if (err) {
-                            res.sendStatus(500);
-                            res.end()
-                        }
-                        res.send(rows);
-                    });
-            }
-            else {
-                //Afficher toutes les séances pour un jour donné
-                db.query(
-                    'SELECT  films.titre, seances.* FROM films, seances WHERE films.id_film = seances.id_film AND seances.date_projection = ?;',
-                    [req.query.date], (err, rows) => {
-                        if (err) {
-                            res.sendStatus(500);
-                            res.end()
-                        }
-                        res.send(rows);
-                    });
-            }
-
-        }
-        
-    });
-    
 //Afficher toutes les séances pour une semaine donnée
 
-
-
-
-
-
-
-
-
 //get seance i
-router.route('/:id')
-    .get((req, res) => {
-        const method = req.method; const routePath = req.route.path; const query = req.query;
-        console.log({ method, routePath, query });
-        db.query('SELECT films.titre, seances.* FROM ??, ?? WHERE films.id_film = seances.id_film AND seances.id_seance = ?' ,
-        ['films', 'seances', req.params.id], (err, rows, fields) => {
-            if (err){
-                res.sendStatus(500)
-            }
-            res.send(rows)
-        })
-    })
-    .delete((req, res) => { //Supprimer une séance
-        const method = req.method; const routePath = req.route.path; const query = req.query;
-        console.log({ method, routePath, query });
-        db.query('DELETE FROM ?? WHERE seances.id_seance = ?',
-            ['seances', req.params.id], (err, rows, fields) => {
-                if (err) {
-                    res.sendStatus(500)
-                }
-                res.send(rows)
-            })
-    });
+router
+	.route('/:id')
+	.get(seance.findOne) //Obtenir une seance
+	.delete(seance.deleteOne);
 
 //Obtenir tous les billets d'une séance
-router.get('/:id/billets', (req, res) => {
-        db.query('SELECT billets.* FROM ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
-            ['billets', 'seances', req.params.id], (err, rows) => {
-                if (err) {
-                    res.sendStatus(500)
-                }
-                res.send(rows)
-            })
-    })
+router
+	.get('/:id/billets', seance.getBillets)
 
-    //Obtenir le nombre de billets vendus pour une séance
-    .get('/:id/billets/count', (req, res) => {
-        db.query('SELECT COUNT(billets.id_billets) FROM ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
-            ['billets', 'seances', req.params.id], (err, rows) => {
-                if (err) {
-                    res.sendStatus(500)
-                }
-                res.send(rows)
-            })
-    })
+	//Obtenir le nombre de billets vendus pour une séance
+	.get('/:id/billets/count', seance.countBillets)
 
-    //Calculer le bénéfice/perte d'une séance 
-    .get('/:id/billets/benef', (req, res) => {
+	//Calculer le bénéfice/perte d'une séance
+	.get('/:id/billets/benef', seance.getBenefice);
 
-        db.query('SELECT SUM(billets.prix_vente) FROM ??, ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
-            ['billets', 'seances', req.params.id], (err, rows) => {
-                if (err) {
-                    res.sendStatus(500)
-                }
-                res.send(rows)
-            })
-    })
-
+//.post('/newSeance', seance.newOne);
 
 //Calculer le nombre d'entrées prévisionnel pour la semaine
-
-
-
 
 // router.get('/:id/:id_film', (req, res) => {
 //     const method = req.method; const routePath = req.route.path; const query = req.query;

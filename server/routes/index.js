@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db.js');
+const moment = require('moment');
 
 //peu utile
-// router.get('/', function(req,res){ //homepage
-//     const method = req.method; const routePath = req.route.path; const query = req.query;
-//     console.log({ method, routePath, query });
-//     //res.sendFile(__dirname + '/file.html');
-// });
+router.get('/', function(req, res) {
+	//homepage
+	var a = moment('2016-01-05', 'YYYY-MM-DD').add(1, 'day');
+	var b = a
+		.clone()
+		.add(2, 'day')
+		.add(1, 'day');
+	console.log(a.format());
+	console.log(b.format('YYYY-MM-DD'));
+	res.sendStatus(200);
+	//res.sendFile(__dirname + '/file.html');
+});
 
 module.exports = router;

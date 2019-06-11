@@ -1,5 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db.js');
+const db = require('../models/database.js');
 
 module.exports = router;
