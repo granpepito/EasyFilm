@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const util = require('util');
 
 var pool = mysql.createPool({
 	connectionLimit: 10,
@@ -10,7 +11,7 @@ var pool = mysql.createPool({
 	supportBigNumbers: true
 });
 
-pool.getConnection(function(err, connection) {
+pool.getConnection((err, connection) => {
 	if (err) {
 		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
 			console.error('Database connection was closed.');
@@ -28,5 +29,7 @@ pool.getConnection(function(err, connection) {
 		connection.release();
 	}
 });
+
+pool.query = util.promisify(pool.query);
 
 module.exports = pool;

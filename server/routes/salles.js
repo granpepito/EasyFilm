@@ -6,10 +6,9 @@ const salle = require('../controllers/salles');
 router
 	.get('/all', salle.getAll)
 	.get('/countAll', salle.countAll)
-
+	.post('/newSalle', salle.newOne)
 	//Afficher une salle
 	.route('/:id')
-	.get(salle.findOne)
-	.post(salle.newOne);
+	.get(salle.findOne);
 
 module.exports = router;

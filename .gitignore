@@ -5,7 +5,7 @@
 .sonarlint
 
 # SQL 
-SQL
+# SQL
 
 # Dependencies
 /server/node_modules

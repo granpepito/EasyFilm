@@ -29,10 +29,14 @@ const Salle = {
 		}
 	},
 	countAll: (req, res) => {
-		db.query('SELECT COUNT(*) FROM ??', ['salles'], (err, rows) => {
-			if (err) res.sendStatus(500);
-			res.send(rows);
-		});
+		db.query(
+			'SELECT COUNT(*) AS "nombreDeSalle" FROM ??',
+			['salles'],
+			(err, rows) => {
+				if (err) res.sendStatus(500);
+				res.send(rows);
+			}
+		);
 	},
 	findOne: (req, res) => {
 		db.query(

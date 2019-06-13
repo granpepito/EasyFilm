@@ -112,8 +112,16 @@ const Seance = {
 	},
 	countBillets: (req, res) => {
 		db.query(
-			'SELECT COUNT(billets.id_billets) FROM ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
-			['billets', 'seances', req.params.id],
+			'SELECT COUNT(??) AS billetsVendus FROM ??, ?? WHERE ?? = ?? AND ?? = ?',
+			[
+				'billets.id_billet',
+				'billets',
+				'seances',
+				'seances.id_seance',
+				'billets.id_seance',
+				'seances.id_seance',
+				req.params.id
+			],
 			(err, rows) => {
 				if (err) {
 					res.sendStatus(500);
@@ -124,8 +132,16 @@ const Seance = {
 	},
 	getBenefice: (req, res) => {
 		db.query(
-			'SELECT SUM(billets.prix_vente) FROM ??, ??, ?? WHERE seances.id_seance = billets.id_seance AND seances.id_seance = ?',
-			['billets', 'seances', req.params.id],
+			'SELECT SUM(??) AS benefice FROM ??, ?? WHERE ?? = ?? AND ?? = ?',
+			[
+				'billets.prix_vente',
+				'billets',
+				'seances',
+				'seances.id_seance',
+				'billets.id_seance',
+				'seances.id_seance',
+				req.params.id
+			],
 			(err, rows) => {
 				if (err) {
 					res.sendStatus(500);
