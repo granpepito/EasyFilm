@@ -20,13 +20,14 @@ Ajoutez dans votre base de données le contenu des fichiers du dossier SQL dans 
 5. [FilmsRules.sql](https://github.com/granpepito/EasyFilm/blob/master/SQL/FilmsRules.sql)
 6. [AffectationsRules.sql](https://github.com/granpepito/EasyFilm/blob/master/SQL/AffectationsRules.sql)
 
-Créez un fichier .env pour les variables d'environnements que vous voulez attribuer. Par exemple:
+Dans le dossier _server_, créez un fichier .env pour les variables d'environnements que vous voulez attribuer. Par exemple:
 
     PORT=3000
     DB_HOST=127.0.0.1
-    DB_USER=easyfilm
-    DB_PASSWORD=password
+    DB_USER=root
     DB_DATABASE=easyfilm
+
+Pour le mot de passe: **DB_PASSWORD**
 
 Téléchargez le logiciel Insomnia afin de pouvoir tester les différentes requêtes de l'API
 sur le site de [Insomnia](https://insomnia.rest).
