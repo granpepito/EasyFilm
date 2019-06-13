@@ -38,7 +38,6 @@ const Billet = {
 			'INSERT INTO ??(??) VALUES (?)',
 			['billets', 'id_seance', req.body.idSeance],
 			(err, rows) => {
-				console.log(err);
 				if (err) res.sendStatus(500);
 				res.send(rows);
 			}

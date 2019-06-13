@@ -1,4 +1,4 @@
-const db = require('../models/database.js');
+const db = require('../models/database');
 
 const Seance = {
 	getAll: (req, res) => {
@@ -94,6 +94,24 @@ const Seance = {
 				if (err) {
 					res.sendStatus(500);
 				}
+				res.send(rows);
+			}
+		);
+	},
+	getAffectation: (req, res) => {
+		db.query(
+			'SELECT ?? FROM ??, ?? WHERE ?? = ?? AND ?? = ?',
+			[
+				'salle',
+				'affectations',
+				'seances',
+				'seances.id_seance',
+				'affectations.seance',
+				'seances.id_seance',
+				req.params.id
+			],
+			(err, rows) => {
+				if (err) res.sendStatus(500);
 				res.send(rows);
 			}
 		);

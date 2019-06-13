@@ -1,4 +1,4 @@
-const db = require('../models/database.js');
+const db = require('../models/database');
 
 const Salle = {
 	getAll: (req, res) => {

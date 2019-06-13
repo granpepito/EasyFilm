@@ -112,11 +112,9 @@ const Film = {
 					)
 					.then(([rows, fields]) => {
 						const filmId = rows.insertId;
-						console.log(filmId);
 						axios
 							.get(`http://localhost:${process.env.PORT}/salle/countAll`)
 							.then(response => {
-								//console.log(response.data[0].nombreDeSalle);
 								//On regarde si c'est possible d'ajouter les séances compte tenu du nombre de salles disponibles et du nombre de séances déjà programmées
 								const nombreDeSalle = response.data[0].nombreDeSalle;
 
@@ -129,9 +127,6 @@ const Film = {
 									)
 									.then(([rows, fields]) => {
 										const nombreDeSeances = rows[0].nombreDeSeances;
-										//console.log(nombreDeSeances);
-										//console.log(filmId);
-										//console.log(nombreDeSeances < nombreDeSalle);
 										if (nombreDeSeances < nombreDeSalle) {
 											var datePremiere = moment(
 												req.body.dateSeance,
@@ -144,8 +139,6 @@ const Film = {
 													.add(jour, 'day');
 
 												for (let type = 0; type < 2; type++) {
-													console.log(dateProjection.format('YYYY-MM-DD'));
-
 													connection
 														.promise()
 														.execute(
@@ -158,7 +151,7 @@ const Film = {
 															]
 														)
 														.then(([rows, fields]) => {
-															console.log(rows.insertId);
+															//console.log(rows.insertId);
 														})
 														.catch(err => {
 															conn.rollback(() => {
@@ -190,134 +183,8 @@ const Film = {
 					}
 				});
 			});
-
-			// connection.beginTransaction(err => {
-			// 	if (err) throw err;
-			// 	connection.query(
-			// 		'INSERT INTO films(??, ??, ??, ??) VALUES (?, ?, ?, ?)',
-			// 		[
-			// 			'titre',
-			// 			'duree',
-			// 			'date_de_sortie',
-			// 			'droit_diffusion',
-			// 			req.body.titreFilm,
-			// 			req.body.dureeFilm,
-			// 			req.body.dateDeSortie,
-			// 			req.body.droitDiffusion
-			// 		],
-			// 		(err, rows) => {
-			// 			const filmId = rows.insertId;
-			// 			if (err) {
-			// 				console.log(err);
-			// 				connection.rollback(() => {
-			// 					//res.sendStatus(500);
-			// 					//connection.release();
-			// 				});
-			// 			} else {
-			// 				//TODO:
-			// 				axios
-			// 					.get(`http://localhost:${process.env.PORT}/salle/countAll`)
-			// 					.then(response => {
-			// 						console.log(response.data[0].nombreDeSalle);
-			// 						//On regarde si c'est possible d'ajouter les séances compte tenu du nombre de salles disponibles et du nombre de séances déjà programmées
-			// 						const nombreDeSalle = response.data[0].nombreDeSalle;
-			// 						connection.query(
-			// 							//On divise par 2 car il y a les types de séances qui doublent le résultat
-			// 							'SELECT count(??)/2 as nombreDeSeances FROM ??, ??  WHERE ?? = ?? AND ?? = ?',
-			// 							[
-			// 								'seances.id_seance',
-			// 								'films',
-			// 								'seances',
-			// 								'films.id_film',
-			// 								'seances.id_film',
-			// 								'seances.date_projection',
-			// 								req.body.dateSeance
-			// 							],
-			// 							(err, rows) => {
-			// 								if (err)
-			// 									connection.rollback(() => {
-			// 										//res.sendStatus(500);
-			// 										//connection.release();
-			// 									});
-
-			// 								const nombreDeSeances = rows[0].nombreDeSeances;
-			// 								//console.log(filmId);
-			// 								//console.log(nombreDeSeances < nombreDeSalle);
-			// 								if (nombreDeSeances < nombreDeSalle) {
-			// 									var datePremiere = moment(
-			// 										req.body.dateSeance,
-			// 										'YYYY-MM-DD'
-			// 									);
-
-			// 									for (var jour = 0; jour < 7; jour++) {
-			// 										const dateProjection = datePremiere
-			// 											.clone()
-			// 											.add(jour, 'day');
-
-			// 										for (let type = 0; type < 2; type++) {
-			// 											console.log(dateProjection.format('YYYY-MM-DD'));
-			// 											(function(film, type, date) {
-			// 												connection.query(
-			// 													'INSERT INTO ??(??, ??, ??, ??) VALUES (?, ?, ?, ?)',
-			// 													[
-			// 														'seances',
-			// 														'id_film',
-			// 														'type',
-			// 														'date_projection',
-			// 														'entrees_previsionnel',
-			// 														film,
-			// 														type,
-			// 														date,
-			// 														req.body.entreesSeance
-			// 													],
-			// 													(err, rows) => {
-			// 														if (err) {
-			// 															connection.rollback(() => {
-			// 																//res.sendStatus(500);
-			// 																//connection.release();
-			// 															});
-			// 														} else console.log(rows.insertId);
-			// 													}
-			// 												);
-			// 											})(
-			// 												filmId,
-			// 												type,
-			// 												dateProjection.format('YYYY-MM-DD')
-			// 											);
-			// 										}
-			// 									}
-			// 								} else {
-			// 									connection.rollback(() => {
-			// 										//res.sendStatus(500);
-			// 										//connection.release();
-			// 									});
-			// 								}
-			// 								connection.commit(err => {
-			// 									if (err) {
-			// 										connection.rollback(() => {
-			// 											//res.sendStatus(500);
-			// 											//connection.release();
-			// 										});
-			// 									} else {
-			// 										res.sendStatus(200);
-			// 										//connection.release();
-			// 									}
-			// 								});
-			// 							}
-			// 						);
-			// 					})
-			// 					.catch(error => {
-			// 						console.log(error);
-			// 						connection.rollback(() => {
-			// 							res.sendStatus(500);
-			// 						});
-			// 					});
-			// 			}
-			// 		}
-			// 	);
 		});
 	}
-	//res.sendStatus(200);
 };
 
 module.exports = Film;

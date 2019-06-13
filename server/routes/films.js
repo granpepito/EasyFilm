@@ -3,18 +3,22 @@ const router = express.Router();
 const film = require('../controllers/films');
 
 router
-	.get('/all', film.getAll) //Afficher tous les films
+	//Afficher tous les films
+	.get('/all', film.getAll)
 
-	.get('/search', film.search); //Rechercher des films (titre)
+	//Rechercher des films (titre)
+	.get('/search', film.search);
 
 router
 	.route('/:id')
-	.get(film.findOne) //Obtenir un film
+	//Obtenir un film
+	.get(film.findOne)
 	.put()
-	.delete(film.deleteOne); //supprimer un film
+	//supprimer un film
+	.delete(film.deleteOne);
 
-//Obtenir tous les billets d'un film
 router
+	//Obtenir tous les billets d'un film
 	.get('/:id/billets', film.getBillets)
 
 	//Obtenir le nombre de billets vendus
@@ -37,13 +41,7 @@ router
 		);
 	});
 
-//TODO:
-//.get('/benef/');
-//Calculer le bénéfice/perte d'un film à la semaine
-
-//Calculer le bénéfice/perte pour tous les films qui ont eu des séances cette semaine
-
-//Ajouter un film (Ajouter un film implique d'aussi ajouter la première séance!)
+//Ajouter un film (et ses 7 premières séances!)
 router.post('/newFilm', film.newOne);
 
 module.exports = router;

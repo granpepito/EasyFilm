@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../models/database.js');
+const affectation = require('../controllers/affectations');
+
+router.get('/all', affectation.getAll);
 
 module.exports = router;

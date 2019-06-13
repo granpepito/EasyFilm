@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const salle = require('../controllers/salles');
 
-//Afficher les salles
 router
+	//Afficher les salles
 	.get('/all', salle.getAll)
+
+	//Compter toutes les salles
 	.get('/countAll', salle.countAll)
+
+	//Créer une nouvelle salle
 	.post('/newSalle', salle.newOne)
-	//Afficher une salle
+
 	.route('/:id')
+	//Obtenir une salle
 	.get(salle.findOne);
 
 module.exports = router;
