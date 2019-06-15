@@ -1,7 +1,7 @@
 -- Creation des tables
 CREATE TABLE `easyfilm`.`Salles` (
     `numero_salle` INT(2) NOT NULL AUTO_INCREMENT ,
-    `capacité` INT(3) NOT NULL ,
+    `capacite` INT(3) NOT NULL ,
     PRIMARY KEY (`numero_salle`)
 );
 
