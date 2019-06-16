@@ -9,6 +9,10 @@ Téléchargez le projet, rendez vous sur le chemin du projet EasyFilm, et instal
     cd server
     npm install
 
+Afin de lancer le serveur:
+
+    npm start
+
 Créez une base de données. Elle va accueillir les données que l'on veut ajouter. Vous pouvez la nommer _easyfilm_.
 
 Ajoutez dans votre base de données le contenu des fichiers du dossier SQL dans l'ordre suivant:
