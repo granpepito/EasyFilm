@@ -9,8 +9,7 @@ dotenv.config({
 
 const PORT = process.env.PORT || 4000;
 
-app
-	.use(bodyParser.json())
+app.use(bodyParser.json())
 	.use(bodyParser.urlencoded({ extended: true }))
 	.use(require('./routes/index'))
 	.use('/affectation', require('./routes/affectations')) //routes concernant les affectations
@@ -18,10 +17,6 @@ app
 	.use('/salle', require('./routes/salles')) //routes concernant les salles
 	.use('/film', require('./routes/films')) //routes concernant les films
 	.use('/billet', require('./routes/billets')) //routes concernant les billets
-	.use((req, res) => {
-		//Si l'adresse entrée n'existe pas on envoie le statut http 404
-		res.sendStatus(404);
-	})
 	.listen(PORT, () => {
 		//App sur le port 4000
 		console.log('Server port', PORT);
